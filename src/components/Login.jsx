@@ -10,6 +10,7 @@ const Login = () => {
   const navigate = useNavigate();
   const [emailId, setEmailId] = useState("sweta@gmail.com");
   const [password, setPassword] = useState("Sweta@123");
+  const [error, setError] = useState("");
 
   axios.defaults.baseURL = BASE_URL;
   axios.defaults.withCredentials = true;
@@ -21,7 +22,7 @@ const Login = () => {
       dispatch(addUser(res.data));
       navigate("/");
     } catch (error) {
-      console.error("Login failed:", error.response?.data || error.message);
+      setError(error.response?.data || error.message);
     }
   };
 
@@ -50,6 +51,7 @@ const Login = () => {
               onChange={(e) => setPassword(e.target.value)}
             />
           </fieldset>
+          <p className="text-sm text-red-600">{error}</p>
           <div className="justify-center card-actions pt-3">
             <button className="btn btn-primary" onClick={handleLogin}>
               Login
