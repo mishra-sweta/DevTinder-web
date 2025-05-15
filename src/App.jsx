@@ -12,9 +12,9 @@ function App() {
       element: <Body />,
       children: [
         { path: "/", element: <Feed /> },
-        { path: "login", element: <Login /> },
+        { path: "/login", element: <Login /> },
         {
-          path: "profile",
+          path: "/profile",
           element: <Profile />,
         },
       ],

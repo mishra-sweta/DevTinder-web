@@ -19,7 +19,7 @@ const Login = () => {
     try {
       const res = await axios.post("/login", { emailId, password });
 
-      dispatch(addUser(res.data));
+      dispatch(addUser(res?.data));
       navigate("/");
     } catch (error) {
       setError(error.response?.data || error.message);
