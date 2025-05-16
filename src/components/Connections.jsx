@@ -34,18 +34,20 @@ const Connections = () => {
 
   return (
     <div>
-      <h1 className="text-3xl m-10 flex justify-center">Connections.</h1>
-      <div className="w-full flex justify-center">
+      <h1 className="text-2xl m-10 flex justify-center">
+        {connections.length === 0 ? "No connections" : "Connections"}
+      </h1>
+      <div className="w-full flex flex-col items-center space-y-4 my-8">
         {connections.map((connection) => (
           <div className="card card-side bg-base-300 shadow-sm w-1/2">
-            <figure>
+            <figure className="w-1/4">
               <img
-                className="h-full max-h-36 object-cover"
+                className="h-full max-h-44 object-cover "
                 src={connection.photoUrl}
                 alt="photo"
               />
             </figure>
-            <div className="card-body">
+            <div className="card-body w-3/4">
               <h2 className="card-title">
                 {connection.firstName + " " + connection.lastName}
               </h2>

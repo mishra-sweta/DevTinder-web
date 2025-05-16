@@ -31,11 +31,11 @@ const Feed = () => {
   }, []);
 
   return (
-    <div className="grid justify-items-center my-10 gap-4">
+    <div className="grid justify-items-center my-5 gap-4">
       {feed.length == 0 ? (
-        <p>No profiles found.</p>
+        <p className="text-2xl">No profiles found.</p>
       ) : (
-        feed.map((user) => <UserCard key={user._id} user={user} />)
+        <UserCard user={feed[0]} />
       )}
     </div>
   );

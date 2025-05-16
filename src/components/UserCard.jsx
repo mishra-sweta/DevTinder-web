@@ -1,7 +1,25 @@
+import { useDispatch } from "react-redux";
+import axios from "../utils/axiosConfig";
 import React from "react";
+import { removeUserFromFeed } from "../utils/feedSlice";
 
 const UserCard = ({ user }) => {
-  const { firstName, lastName, photoUrl, age, gender, about, skills } = user;
+  const { _id, firstName, lastName, photoUrl, age, gender, about, skills } =
+    user;
+  const dispatch = useDispatch();
+
+  const sendConnectionRequest = async (status, id) => {
+    try {
+      const res = await axios.post(`/request/send/${status}/${id}`, {});
+      dispatch(removeUserFromFeed(id));
+    } catch (error) {
+      if (error.response && error.response.status === 401) {
+        navigate("/login");
+      } else {
+        console.error(error.message);
+      }
+    }
+  };
 
   return (
     <div className="card bg-base-300 w-96 shadow-sm ">
@@ -16,8 +34,18 @@ const UserCard = ({ user }) => {
         <div className="card-actions justify-center">
           <div className="space-x-2">
             {" "}
-            <button className="btn btn-primary">Ignore</button>
-            <button className="btn btn-secondary">Interested</button>
+            <button
+              className="btn btn-primary"
+              onClick={() => sendConnectionRequest("ignored", _id)}
+            >
+              Ignore
+            </button>
+            <button
+              className="btn btn-secondary"
+              onClick={() => sendConnectionRequest("interested", _id)}
+            >
+              Interested
+            </button>
           </div>
         </div>
       </div>
