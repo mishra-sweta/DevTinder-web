@@ -8,6 +8,7 @@ const Requests = () => {
   const dispatch = useDispatch();
   const requests = useSelector((store) => store.requests);
   const navigate = useNavigate();
+  const user = useSelector((store) => store.user);
 
   const reviewRequest = async (id, status) => {
     try {
@@ -38,6 +39,7 @@ const Requests = () => {
   };
 
   useEffect(() => {
+    if (!user) return;
     fetchRequests();
   }, []);
   return (

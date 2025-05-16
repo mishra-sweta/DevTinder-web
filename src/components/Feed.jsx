@@ -10,6 +10,7 @@ axios.defaults.withCredentials = true;
 
 const Feed = () => {
   const dispatch = useDispatch();
+  const user = useSelector((store) => store.user);
   const feed = useSelector((store) => store.feed);
 
   const fetchFeed = async () => {
@@ -27,6 +28,7 @@ const Feed = () => {
   };
 
   useEffect(() => {
+    if (!user) return;
     fetchFeed();
   }, []);
 

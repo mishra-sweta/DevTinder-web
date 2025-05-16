@@ -12,6 +12,7 @@ const Connections = () => {
   const dispatch = useDispatch();
   const connections = useSelector((store) => store.connections);
   const navigate = useNavigate();
+  const user = useSelector((store) => store.user);
 
   const fetchConnections = async () => {
     try {
@@ -29,6 +30,7 @@ const Connections = () => {
   };
 
   useEffect(() => {
+    if (!user) return;
     fetchConnections();
   }, []);
 

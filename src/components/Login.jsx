@@ -28,7 +28,7 @@ const Login = () => {
       });
 
       dispatch(addUser(res?.data));
-      navigate("/");
+      navigate("/profile");
     } catch (error) {
       setError(error.response?.data || error.message);
     }
@@ -102,7 +102,7 @@ const Login = () => {
               className="btn btn-primary"
               onClick={isLoginForm ? handleLogin : handleSignUp}
             >
-              {isLoginForm ? "Login" : "SignUp"}
+              {isLoginForm ? "Login" : "Sign Up"}
             </button>
           </div>
           <p
