@@ -1,25 +1,39 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { addUser } from "../utils/userSlice";
 import { BASE_URL } from "../utils/constants";
 import UserCard from "./UserCard";
 
-const EditProfile = ({ user }) => {
-  const [firstName, setFirstName] = useState(user?.firstName);
-  const [lastName, setLastName] = useState(user?.lastName);
-  const [age, setAge] = useState(user?.age);
-  const [about, setAbout] = useState(user?.about);
-  const [gender, setGender] = useState(user?.gender);
-  const [photoUrl, setPhotoUrl] = useState(user?.photoUrl);
-  const [error, setError] = useState("");
-
+const EditProfile = () => {
+  const user = useSelector((store) => store.user);
   const dispatch = useDispatch();
+
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
+  const [age, setAge] = useState("");
+  const [about, setAbout] = useState("");
+  const [gender, setGender] = useState("");
+  const [photoUrl, setPhotoUrl] = useState("");
+  const [error, setError] = useState("");
+  const [showToast, setShowToast] = useState(false);
 
   axios.defaults.baseURL = BASE_URL;
   axios.defaults.withCredentials = true;
 
+  useEffect(() => {
+    if (user) {
+      setFirstName(user.firstName || "");
+      setLastName(user.lastName || "");
+      setAge(user.age || "");
+      setAbout(user.about || "");
+      setGender(user.gender || "");
+      setPhotoUrl(user.photoUrl || "");
+    }
+  }, [user]);
+
   const handleEdit = async () => {
+    setError("");
     try {
       const updatedData = {
         firstName,
@@ -31,9 +45,9 @@ const EditProfile = ({ user }) => {
       };
 
       const res = await axios.put("/profile/edit", updatedData);
-      console.log(res?.data?.data);
-      console.log(res);
       dispatch(addUser(res?.data?.data));
+      setShowToast(true);
+      setTimeout(() => setShowToast(false), 3000);
     } catch (error) {
       setError(error.response?.data || error.message);
     }
@@ -41,7 +55,7 @@ const EditProfile = ({ user }) => {
 
   return (
     <div className="flex justify-center my-8 space-x-10">
-      <div className="card w-96 bg-base-200 card-md shadow-sm ">
+      <div className="card w-96 bg-base-300 card-md shadow-sm">
         <div className="card-body">
           <h2 className="card-title justify-center">Edit Profile</h2>
           <fieldset className="fieldset">
@@ -49,7 +63,6 @@ const EditProfile = ({ user }) => {
             <input
               type="text"
               className="input"
-              placeholder="Type here"
               value={firstName}
               onChange={(e) => setFirstName(e.target.value)}
             />
@@ -59,7 +72,6 @@ const EditProfile = ({ user }) => {
             <input
               type="text"
               className="input"
-              placeholder="Type here"
               value={lastName}
               onChange={(e) => setLastName(e.target.value)}
             />
@@ -70,7 +82,6 @@ const EditProfile = ({ user }) => {
               <input
                 type="text"
                 className="input w-full"
-                placeholder="Type here"
                 value={age}
                 onChange={(e) => setAge(e.target.value)}
               />
@@ -92,9 +103,7 @@ const EditProfile = ({ user }) => {
           <fieldset className="fieldset">
             <legend className="fieldset-legend">About:</legend>
             <textarea
-              type="text"
               className="input"
-              placeholder="Type here"
               value={about}
               onChange={(e) => setAbout(e.target.value)}
             />
@@ -104,7 +113,6 @@ const EditProfile = ({ user }) => {
             <input
               type="text"
               className="input"
-              placeholder="Type here"
               value={photoUrl}
               onChange={(e) => setPhotoUrl(e.target.value)}
             />
@@ -117,7 +125,18 @@ const EditProfile = ({ user }) => {
           </div>
         </div>
       </div>
+
+      {/* Preview Updated Info */}
       <UserCard user={{ firstName, lastName, photoUrl, age, gender, about }} />
+
+      {/* Success Toast */}
+      {showToast && (
+        <div className="toast toast-top toast-center">
+          <div className="alert alert-success">
+            <span>Profile updated successfully.</span>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

@@ -31,7 +31,7 @@ const Feed = () => {
   }, []);
 
   return (
-    <div className="grid justify-items-center mt-10 gap-4">
+    <div className="grid justify-items-center my-10 gap-4">
       {feed.length == 0 ? (
         <p>No profiles found.</p>
       ) : (
