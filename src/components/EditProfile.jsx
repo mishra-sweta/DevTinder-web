@@ -12,11 +12,13 @@ const EditProfile = () => {
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [age, setAge] = useState("");
+  const [skills, setSkills] = useState([]);
   const [about, setAbout] = useState("");
   const [gender, setGender] = useState("");
   const [photoUrl, setPhotoUrl] = useState("");
   const [error, setError] = useState("");
   const [showToast, setShowToast] = useState(false);
+  const [newSkill, setNewSkill] = useState("");
 
   axios.defaults.baseURL = BASE_URL;
   axios.defaults.withCredentials = true;
@@ -29,6 +31,7 @@ const EditProfile = () => {
       setAbout(user.about || "");
       setGender(user.gender || "");
       setPhotoUrl(user.photoUrl || "");
+      setSkills(user.skills || []);
     }
   }, [user]);
 
@@ -42,6 +45,7 @@ const EditProfile = () => {
         about,
         gender,
         photoUrl,
+        skills,
       };
 
       const res = await axios.put("/profile/edit", updatedData);
@@ -109,6 +113,47 @@ const EditProfile = () => {
             />
           </fieldset>
           <fieldset className="fieldset">
+            <legend className="fieldset-legend">Skills:</legend>
+
+            <div className="flex space-x-2">
+              <input
+                type="text"
+                className="input flex-1"
+                placeholder="Add skill"
+                value={newSkill}
+                onChange={(e) => setNewSkill(e.target.value)}
+              />
+              <button
+                className="btn btn-secondary"
+                onClick={(e) => {
+                  e.preventDefault();
+                  if (newSkill.trim() && !skills.includes(newSkill.trim())) {
+                    setSkills([...skills, newSkill.trim()]);
+                    setNewSkill("");
+                  }
+                }}
+              >
+                Add
+              </button>
+            </div>
+
+            <div className="mt-2 flex flex-wrap gap-2">
+              {skills.map((skill, index) => (
+                <div
+                  key={index}
+                  className="badge badge-primary gap-2 py-2 px-3 cursor-pointer"
+                  onClick={() =>
+                    setSkills(skills.filter((_, i) => i !== index))
+                  }
+                  title="Click to remove"
+                >
+                  {skill} ✕
+                </div>
+              ))}
+            </div>
+          </fieldset>
+
+          <fieldset className="fieldset">
             <legend className="fieldset-legend">Photo Url:</legend>
             <input
               type="text"
@@ -127,7 +172,9 @@ const EditProfile = () => {
       </div>
 
       {/* Preview Updated Info */}
-      <UserCard user={{ firstName, lastName, photoUrl, age, gender, about }} />
+      <UserCard
+        user={{ firstName, lastName, photoUrl, age, gender, about, skills }}
+      />
 
       {/* Success Toast */}
       {showToast && (
