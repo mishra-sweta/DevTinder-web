@@ -7,6 +7,7 @@ import appStore from "./utils/appStore";
 import Feed from "./components/Feed";
 import Connections from "./components/Connections";
 import Requests from "./components/Requests";
+import Chat from "./components/Chat";
 function App() {
   const router = createBrowserRouter([
     {
@@ -26,6 +27,10 @@ function App() {
         {
           path: "/requests",
           element: <Requests />,
+        },
+        {
+          path: "/chat/:userId",
+          element: <Chat />,
         },
       ],
     },

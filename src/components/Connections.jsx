@@ -1,7 +1,7 @@
 import axios from "axios";
 import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { BASE_URL } from "../utils/constants";
 import { addConnections } from "../utils/connectionsSlice";
 
@@ -35,32 +35,41 @@ const Connections = () => {
   }, []);
 
   return (
-    <div>
-      <h1 className="text-2xl m-10 flex justify-center">
+    <div className="flex flex-col items-center">
+      <h1 className="text-2xl m-10">
         {connections.length === 0 ? "No connections" : "Connections"}
       </h1>
-      <div className="w-full flex flex-col items-center space-y-4 my-8">
-        {connections.map((connection) => (
-          <div className="card card-side bg-base-300 shadow-sm w-1/2">
-            <figure className="w-1/4">
-              <img
-                className="h-full max-h-44 object-cover "
-                src={connection.photoUrl}
-                alt="photo"
-              />
-            </figure>
-            <div className="card-body w-3/4">
+
+      {connections.map((connection) => (
+        <div
+          key={connection._id} // Use a unique key like connection.id
+          className="card card-side bg-base-300 shadow-sm w-1/2 mb-6"
+        >
+          <figure className="w-1/4">
+            <img
+              className="h-full max-h-44 object-cover w-full"
+              src={connection.photoUrl}
+              alt="photo"
+            />
+          </figure>
+
+          <div className="card-body w-3/4 flex flex-row justify-between items-center">
+            <div>
               <h2 className="card-title">
                 {connection.firstName + " " + connection.lastName}
               </h2>
               <p>{connection.about}</p>
               {connection.skills.length !== 0 && (
-                <p>{"Skills: " + connection.skills}</p>
+                <p>{"Skills: " + connection.skills.join(", ")}</p>
               )}
             </div>
+
+            <Link to={"/chat/" + connection._id}>
+              <button className="btn btn-primary">Chat</button>
+            </Link>
           </div>
-        ))}
-      </div>
+        </div>
+      ))}
     </div>
   );
 };
