@@ -2,7 +2,9 @@ import React from "react";
 import { useParams } from "react-router-dom";
 
 const Chat = () => {
-  const { userId } = useParams();
+  const { targetId } = useParams();
+  const user = useSelector((store) => store.user);
+  const userId = user?._id;
   const [messages, setMessages] = useState([
     { from: "them", text: "Hey there!" },
     { from: "me", text: "Hi, how are you?" },
@@ -14,6 +16,15 @@ const Chat = () => {
     setMessages([...messages, { from: "me", text: input }]);
     setInput("");
   };
+
+  useEffect(() => {
+    const socket = createSocketConnection();
+    socket.emit("joinChat", { userId, targetId });
+
+    return () => {
+      socket.disconnect();
+    };
+  }, []);
 
   return (
     <div className="w-1/2 mx-auto my-10 border rounded-2xl shadow-md bg-base-100 flex flex-col h-[500px]">
@@ -63,3 +74,5 @@ const Chat = () => {
 export default Chat;
 
 import { useState } from "react";
+import { useSelector } from "react-redux";
+import { createSocketConnection } from "../utils/socket";

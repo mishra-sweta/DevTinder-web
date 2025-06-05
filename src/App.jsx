@@ -29,7 +29,7 @@ function App() {
           element: <Requests />,
         },
         {
-          path: "/chat/:userId",
+          path: "/chat/:targetId",
           element: <Chat />,
         },
       ],

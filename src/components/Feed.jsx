@@ -4,6 +4,7 @@ import { useSelector, useDispatch } from "react-redux";
 import axios from "axios";
 import { addFeed } from "../utils/feedSlice";
 import { BASE_URL } from "../utils/constants";
+import { useNavigate } from "react-router-dom";
 
 axios.defaults.baseURL = BASE_URL;
 axios.defaults.withCredentials = true;
@@ -12,6 +13,7 @@ const Feed = () => {
   const dispatch = useDispatch();
   const user = useSelector((store) => store.user);
   const feed = useSelector((store) => store.feed);
+  const navigate = useNavigate();
 
   const fetchFeed = async () => {
     try {
@@ -28,7 +30,9 @@ const Feed = () => {
   };
 
   useEffect(() => {
-    if (!user) return;
+    if (!user) {
+      navigate("/login");
+    }
     fetchFeed();
   }, []);
 
