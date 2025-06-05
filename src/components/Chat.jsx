@@ -10,10 +10,26 @@ const Chat = () => {
   const [messages, setMessages] = useState([]);
   const [input, setInput] = useState("");
 
+  const sendMessage = () => {
+    const socket = createSocketConnection();
+    socket.emit("sendMessage", {
+      firstName: user.firstName,
+      userId,
+      targetId,
+      text: input,
+    });
+    setInput("");
+  };
+
   useEffect(() => {
     if (!user) return;
     const socket = createSocketConnection();
-    socket.emit("joinChat", { userId, targetId });
+    socket.emit("joinChat", { firstName: user.firstName, userId, targetId });
+
+    socket.on("messageReceived", ({ firstName, text }) => {
+      console.log(firstName + " " + text);
+      setMessages((messages) => [...messages, { firstName, text }]);
+    });
 
     return () => {
       socket.disconnect();
@@ -21,20 +37,20 @@ const Chat = () => {
   }, [userId, targetId]);
 
   return (
-    <div className="w-1/2 mx-auto my-10 border rounded-2xl shadow-md bg-base-100 flex flex-col h-[500px]">
-      <div className="p-4 border-b text-xl font-semibold bg-base-200 rounded-t-2xl">
+    <div className="w-1/2 mx-auto my-10 border border-gray-600 rounded-2xl shadow-md bg-base-100 flex flex-col h-[70vh]">
+      <h1 className="p-4 border-b text-xl font-semibold bg-base-200 rounded-t-2xl border-gray-600">
         Chat
-      </div>
+      </h1>
 
       <div className="flex-1 overflow-y-auto p-4 space-y-3">
         {messages.map((msg, index) => {
           return (
             <div className="chat chat-start" key={index}>
               <div className="chat-header">
-                Ankita
+                {msg.firstName}
                 <time className="text-xs opacity-50 ml-2">2 hours ago</time>
               </div>
-              <div className="chat-bubble">You were the Chosen One!</div>
+              <div className="chat-bubble"> {msg.text}</div>
               <div className="chat-footer opacity-50">Seen</div>
             </div>
           );
@@ -48,8 +64,11 @@ const Chat = () => {
           placeholder="Type a message..."
           value={input}
           onChange={(e) => setInput(e.target.value)}
+          onKeyDown={(e) => e.key === "Enter" && sendMessage()}
         />
-        <button className="btn btn-primary">Send</button>
+        <button className="btn btn-primary" onClick={sendMessage}>
+          Send
+        </button>
       </div>
     </div>
   );
